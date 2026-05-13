@@ -8,11 +8,18 @@ import {
   Briefcase,
   CheckCircle2,
   Clock3,
+  RefreshCw,
 } from "lucide-react";
 
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+
+const supabaseAnonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  supabaseUrl,
+  supabaseAnonKey
 );
 
 type Enquiry = {
@@ -27,33 +34,56 @@ type Enquiry = {
 
 export default function AdminPage() {
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // FETCH DATA
+  // FETCH ENQUIRIES
   const fetchEnquiries = async () => {
-    const { data, error } = await supabase
-      .from("enquiries")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Supabase Error:", error);
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error("Missing Supabase environment variables");
+      setLoading(false);
       return;
     }
 
-    setEnquiries(data || []);
+    try {
+      const { data, error } = await supabase
+        .from("enquiries")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Supabase Error:", error);
+        return;
+      }
+
+      setEnquiries(data || []);
+    } catch (err) {
+      console.error("Unexpected Error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // LOAD
+  // INITIAL LOAD
   useEffect(() => {
-    const load = async () => {
-      await fetchEnquiries();
-    };
-
-    load();
+    setTimeout(() => {
+      fetchEnquiries();
+    }, 0);
   }, []);
 
-  // DELETE
+  // REFRESH
+  const refreshEnquiries = async () => {
+    setLoading(true);
+    await fetchEnquiries();
+  };
+
+  // DELETE ENQUIRY
   const deleteEnquiry = async (id: number) => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this enquiry?"
+    );
+
+    if (!confirmDelete) return;
+
     const { error } = await supabase
       .from("enquiries")
       .delete()
@@ -64,7 +94,9 @@ export default function AdminPage() {
       return;
     }
 
-    fetchEnquiries();
+    setEnquiries((prev) =>
+      prev.filter((item) => item.id !== id)
+    );
   };
 
   // UPDATE STATUS
@@ -82,9 +114,16 @@ export default function AdminPage() {
       return;
     }
 
-    fetchEnquiries();
+    setEnquiries((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, status }
+          : item
+      )
+    );
   };
 
+  // STATS
   const openCount = enquiries.filter(
     (item) => item.status !== "Replied"
   ).length;
@@ -93,32 +132,78 @@ export default function AdminPage() {
     (item) => item.status === "Replied"
   ).length;
 
+  // ENV ERROR
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return (
+      <div className="min-h-screen bg-[#050816] text-white flex items-center justify-center p-8">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-8 max-w-xl text-center">
+          <h1 className="text-2xl font-semibold mb-4 text-red-400">
+            Missing Environment Variables
+          </h1>
+
+          <p className="text-gray-300 leading-relaxed">
+            Please add your Supabase credentials in
+            <span className="text-blue-400">
+              {" "}
+              .env.local
+            </span>
+            {" "}or Vercel Environment Variables.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#070B14] text-white overflow-hidden">
+    <div className="min-h-screen bg-[#050816] text-white overflow-hidden relative">
 
       {/* BACKGROUND */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute w-[500px] h-[500px] bg-blue-600/10 blur-3xl rounded-full top-[-150px] left-[-150px]" />
-        <div className="absolute w-[400px] h-[400px] bg-purple-600/10 blur-3xl rounded-full bottom-[-150px] right-[-150px]" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+
+        <div className="absolute top-[-150px] left-[-150px] w-[500px] h-[500px] bg-blue-600/10 blur-3xl rounded-full" />
+
+        <div className="absolute bottom-[-200px] right-[-150px] w-[450px] h-[450px] bg-purple-600/10 blur-3xl rounded-full" />
+
+        <div className="absolute top-[30%] left-[40%] w-[250px] h-[250px] bg-cyan-500/5 blur-3xl rounded-full" />
+
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
 
         {/* HEADER */}
-        <div className="mb-12">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-12">
 
-          <p className="text-blue-400 text-sm tracking-[0.25em] uppercase mb-4">
-            Tarak IT Solutions
-          </p>
+          <div>
 
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
-            Client Enquiry Dashboard
-          </h1>
+            <p className="text-blue-400 text-sm tracking-[0.3em] uppercase mb-4">
+              Tarak IT Solutions
+            </p>
 
-          <p className="text-gray-400 mt-4 max-w-2xl leading-relaxed">
-            Monitor, manage, and respond to client enquiries
-            from your AI-powered business website.
-          </p>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+              Client Enquiry Dashboard
+            </h1>
+
+            <p className="text-gray-400 mt-4 max-w-2xl leading-relaxed">
+              Manage customer enquiries, monitor leads,
+              and track client communication from one place.
+            </p>
+
+          </div>
+
+          {/* REFRESH */}
+          <button
+            onClick={refreshEnquiries}
+            className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-2xl transition"
+          >
+            <RefreshCw
+              className={`w-4 h-4 ${
+                loading ? "animate-spin" : ""
+              }`}
+            />
+
+            Refresh
+
+          </button>
 
         </div>
 
@@ -128,22 +213,24 @@ export default function AdminPage() {
           {/* TOTAL */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
 
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-5">
+
               <div className="p-3 rounded-2xl bg-blue-500/10">
                 <Briefcase className="w-6 h-6 text-blue-400" />
               </div>
 
               <span className="text-xs text-gray-400">
-                Total
+                TOTAL
               </span>
+
             </div>
 
-            <h2 className="text-4xl font-semibold">
+            <h2 className="text-4xl font-bold">
               {enquiries.length}
             </h2>
 
             <p className="text-gray-400 mt-2 text-sm">
-              Total customer enquiries
+              Total enquiries received
             </p>
 
           </div>
@@ -151,22 +238,24 @@ export default function AdminPage() {
           {/* OPEN */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
 
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-5">
+
               <div className="p-3 rounded-2xl bg-yellow-500/10">
                 <Clock3 className="w-6 h-6 text-yellow-400" />
               </div>
 
               <span className="text-xs text-gray-400">
-                Pending
+                OPEN
               </span>
+
             </div>
 
-            <h2 className="text-4xl font-semibold text-yellow-400">
+            <h2 className="text-4xl font-bold text-yellow-400">
               {openCount}
             </h2>
 
             <p className="text-gray-400 mt-2 text-sm">
-              Open leads awaiting response
+              Awaiting response
             </p>
 
           </div>
@@ -174,42 +263,57 @@ export default function AdminPage() {
           {/* REPLIED */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
 
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-5">
+
               <div className="p-3 rounded-2xl bg-green-500/10">
                 <CheckCircle2 className="w-6 h-6 text-green-400" />
               </div>
 
               <span className="text-xs text-gray-400">
-                Completed
+                REPLIED
               </span>
+
             </div>
 
-            <h2 className="text-4xl font-semibold text-green-400">
+            <h2 className="text-4xl font-bold text-green-400">
               {repliedCount}
             </h2>
 
             <p className="text-gray-400 mt-2 text-sm">
-              Successfully replied enquiries
+              Completed conversations
             </p>
 
           </div>
 
         </div>
 
-        {/* EMPTY STATE */}
-        {enquiries.length === 0 ? (
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-12 text-center backdrop-blur-xl">
+        {/* LOADING */}
+        {loading ? (
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-16 text-center backdrop-blur-xl">
 
-            <h2 className="text-3xl font-medium mb-4">
-              No Enquiries Yet
-            </h2>
+            <div className="w-10 h-10 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-5" />
 
-            <p className="text-gray-400 max-w-lg mx-auto">
-              Customer enquiries submitted through your chatbot
-              or contact form will appear here.
+            <p className="text-gray-400">
+              Loading enquiries...
             </p>
 
           </div>
+        ) : enquiries.length === 0 ? (
+
+          /* EMPTY */
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-14 text-center backdrop-blur-xl">
+
+            <h2 className="text-3xl font-semibold mb-4">
+              No Enquiries Yet
+            </h2>
+
+            <p className="text-gray-400 max-w-xl mx-auto leading-relaxed">
+              Client enquiries submitted through your website
+              chatbot will appear here.
+            </p>
+
+          </div>
+
         ) : (
 
           /* ENQUIRIES */
@@ -218,25 +322,27 @@ export default function AdminPage() {
             {enquiries.map((item) => (
               <div
                 key={item.id}
-                className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl hover:border-blue-500/30 transition-all duration-300"
+                className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl hover:border-blue-500/20 transition-all duration-300"
               >
 
                 {/* TOP */}
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-6">
+                <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5 mb-6">
 
                   {/* USER */}
                   <div>
 
-                    <h2 className="text-2xl font-medium">
+                    <h2 className="text-2xl font-semibold">
                       {item.name}
                     </h2>
 
                     <div className="flex items-center gap-2 mt-2 text-gray-400 text-sm">
+
                       <Mail className="w-4 h-4" />
 
                       <span>
                         {item.email}
                       </span>
+
                     </div>
 
                   </div>
@@ -244,9 +350,8 @@ export default function AdminPage() {
                   {/* ACTIONS */}
                   <div className="flex items-center gap-3 flex-wrap">
 
-                    {/* SERVICE */}
-                    <span className="text-sm px-4 py-2 rounded-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-white/10 text-blue-300">
-                      {item.service}
+                    <span className="px-4 py-2 rounded-full text-sm border border-blue-500/20 bg-blue-500/10 text-blue-300">
+                      {item.service || "General"}
                     </span>
 
                     {/* STATUS */}
@@ -258,7 +363,11 @@ export default function AdminPage() {
                           e.target.value
                         )
                       }
-                      className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none"
+                      className={`px-4 py-2 rounded-xl text-sm border outline-none transition ${
+                        item.status === "Replied"
+                          ? "bg-green-500/10 border-green-500/20 text-green-300"
+                          : "bg-yellow-500/10 border-yellow-500/20 text-yellow-300"
+                      }`}
                     >
                       <option value="Open">
                         Open
@@ -267,6 +376,7 @@ export default function AdminPage() {
                       <option value="Replied">
                         Replied
                       </option>
+
                     </select>
 
                     {/* DELETE */}
@@ -274,7 +384,7 @@ export default function AdminPage() {
                       onClick={() =>
                         deleteEnquiry(item.id)
                       }
-                      className="p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition"
+                      className="p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/10 transition"
                     >
                       <Trash2 className="w-4 h-4 text-red-400" />
                     </button>
@@ -293,7 +403,7 @@ export default function AdminPage() {
                 </div>
 
                 {/* FOOTER */}
-                <div className="mt-6 flex items-center justify-between flex-wrap gap-4">
+                <div className="mt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
                   <p className="text-xs text-gray-500">
                     {new Date(
@@ -303,7 +413,7 @@ export default function AdminPage() {
 
                   <a
                     href={`mailto:${item.email}`}
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-sm hover:opacity-90 transition"
+                    className="w-fit px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 transition text-sm font-medium"
                   >
                     Reply to Client
                   </a>
