@@ -21,7 +21,8 @@ import {
 
 import { useRouter } from "next/navigation";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-
+import Image from "next/image";
+import "./admin.css";
 import { supabase } from "@/lib/supabase";
 
 type Enquiry = {
@@ -223,13 +224,13 @@ export default function AdminPage() {
   // LOADING SCREEN
   if (checkingAuth) {
     return (
-      <div className="min-h-screen bg-[#070B14] flex items-center justify-center text-white">
+      <div className="loading-screen">
 
         <div className="text-center">
 
-          <div className="w-10 h-10 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-10 h-10 border-2 border-[#02A3F0] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
 
-          <p className="text-gray-400">
+          <p className="text-slate-500">
             Loading Dashboard...
           </p>
 
@@ -248,13 +249,32 @@ export default function AdminPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#070B14] text-white overflow-hidden">
+    <div
+  className={`admin-page ${
+    theme === "dark"
+      ? "bg-[#0B1220] text-white"
+      : "bg-[#F5F8FC] text-[#111827]"
+  }`}
+>
 
       {/* BACKGROUND */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute w-[500px] h-[500px] bg-blue-600/10 blur-3xl rounded-full top-[-150px] left-[-150px]" />
-        <div className="absolute w-[400px] h-[400px] bg-purple-600/10 blur-3xl rounded-full bottom-[-150px] right-[-150px]" />
-      </div>
+      <div
+  className={`absolute w-[500px] h-[500px] rounded-full blur-3xl top-[-150px] left-[-150px]
+  ${
+    theme === "dark"
+      ? "bg-[#02A3F0]/10"
+      : "bg-[#02A3F0]/5"
+  }`}
+/>
+
+<div
+  className={`absolute w-[400px] h-[400px] rounded-full blur-3xl bottom-[-150px] right-[-150px]
+  ${
+    theme === "dark"
+      ? "bg-[#093080]/15"
+      : "bg-[#093080]/5"
+  }`}
+/>
 
       {/* PROFILE */}
       <div
@@ -266,10 +286,10 @@ export default function AdminPage() {
           onClick={() =>
             setProfileOpen(!profileOpen)
           }
-          className="flex items-center gap-3 bg-white/5 border border-white/10 backdrop-blur-xl px-4 py-3 rounded-2xl hover:border-blue-500/30 transition-all duration-300"
+          className="admin-profile-btn"
         >
 
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+          <div className="admin-avatar">
             <User className="w-5 h-5 text-white" />
           </div>
 
@@ -278,25 +298,25 @@ export default function AdminPage() {
               Admin
             </p>
 
-            <p className="text-xs text-gray-400 max-w-[140px] truncate">
+            <p className="text-xs text-slate-500 max-w-[140px] truncate">
               {user?.email}
             </p>
           </div>
 
-          <ChevronDown className="w-4 h-4 text-gray-400" />
+          <ChevronDown className="w-4 h-4 text-slate-500" />
 
         </button>
 
         {/* DROPDOWN */}
         {profileOpen && (
-          <div className="absolute right-0 mt-4 w-72 bg-[#0D1320]/95 backdrop-blur-2xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+          <div className="absolute right-0 admin-dropdown">
 
             {/* USER INFO */}
             <div className="p-5 border-b border-white/10">
 
               <div className="flex items-center gap-4">
 
-                <div className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-full bg-[#093080] flex items-center justify-center">
                   <User className="w-6 h-6 text-white" />
                 </div>
 
@@ -305,7 +325,7 @@ export default function AdminPage() {
                     Tarak Admin
                   </h3>
 
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-slate-500">
                     {user?.email}
                   </p>
                 </div>
@@ -322,9 +342,9 @@ export default function AdminPage() {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-left"
               >
                 {theme === "dark" ? (
-                  <Sun className="w-5 h-5 text-yellow-400" />
+                  <Sun className="w-5 h-5 text-[#02A3F0]" />
                 ) : (
-                  <Moon className="w-5 h-5 text-blue-400" />
+                  <Moon className="w-5 h-5 text-[#093080]" />
                 )}
 
                 <span>
@@ -337,7 +357,7 @@ export default function AdminPage() {
               </button>
 
               <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-left">
-                <Settings className="w-5 h-5 text-gray-300" />
+                <Settings className="w-5 h-5 text-slate-700" />
                 <span>Settings</span>
               </button>
 
@@ -347,7 +367,7 @@ export default function AdminPage() {
               </button>
 
               <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-left">
-                <ShieldCheck className="w-5 h-5 text-green-400" />
+                <ShieldCheck className="w-5 h-5 text-[#093080]" />
                 <span>Security</span>
               </button>
 
@@ -377,20 +397,34 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
+      <div className="admin-container">
 
         {/* HEADER */}
         <div className="mb-12">
 
-          <p className="text-blue-400 text-sm tracking-[0.25em] uppercase mb-4">
-            Tarak IT Solutions
-          </p>
+          <div className="flex items-center gap-4 mb-6">
 
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
-            Client Enquiry Dashboard
-          </h1>
+  <Image
+    src="/LOGO.png"
+    alt="Tarak IT Solutions"
+    width={70}
+    height={70}
+    priority
+  />
 
-          <p className="text-gray-400 mt-4 max-w-2xl leading-relaxed">
+  <div>
+    <p className="text-[#02A3F0] font-semibold uppercase tracking-[0.25em]">
+      Tarak IT Solutions
+    </p>
+
+    <h1 className="text-4xl md:text-5xl font-bold">
+      Client Enquiry Dashboard
+    </h1>
+  </div>
+
+</div>
+
+          <p className="text-slate-500 mt-4 max-w-2xl leading-relaxed">
             Monitor, manage, and respond to client enquiries
             from your AI-powered business website.
           </p>
@@ -400,13 +434,13 @@ export default function AdminPage() {
         {/* STATS */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
+          <div className="admin-stat-card">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 rounded-2xl bg-blue-500/10">
-                <Briefcase className="w-6 h-6 text-blue-400" />
+              <div className="p-3 rounded-2xl bg-[#093080]/10">
+                <Briefcase className="w-6 h-6 text-[#093080]" />
               </div>
 
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-slate-500">
                 Total
               </span>
             </div>
@@ -416,34 +450,34 @@ export default function AdminPage() {
             </h2>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 rounded-2xl bg-yellow-500/10">
-                <Clock3 className="w-6 h-6 text-yellow-400" />
+                <Clock3 className="w-6 h-6 text-[#02A3F0]" />
               </div>
 
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-slate-500">
                 Pending
               </span>
             </div>
 
-            <h2 className="text-4xl font-semibold text-yellow-400">
+            <h2 className="text-4xl font-semibold text-[#02A3F0]">
               {openCount}
             </h2>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 rounded-2xl bg-green-500/10">
-                <CheckCircle2 className="w-6 h-6 text-green-400" />
+                <CheckCircle2 className="w-6 h-6 text-[#093080]" />
               </div>
 
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-slate-500">
                 Completed
               </span>
             </div>
 
-            <h2 className="text-4xl font-semibold text-green-400">
+            <h2 className="text-4xl font-semibold text-[#093080]">
               {repliedCount}
             </h2>
           </div>
@@ -452,13 +486,13 @@ export default function AdminPage() {
 
         {/* EMPTY */}
         {enquiries.length === 0 ? (
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-12 text-center backdrop-blur-xl">
+          <div className="bg-white border border-slate-200 shadow-md rounded-3xl p-12 text-center backdrop-blur-xl">
 
             <h2 className="text-3xl font-medium mb-4">
               No Enquiries Yet
             </h2>
 
-            <p className="text-gray-400 max-w-lg mx-auto">
+            <p className="text-slate-500 max-w-lg mx-auto">
               Customer enquiries submitted through your chatbot
               or contact form will appear here.
             </p>
@@ -470,7 +504,7 @@ export default function AdminPage() {
             {enquiries.map((item) => (
               <div
                 key={item.id}
-                className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl hover:border-blue-500/30 transition-all duration-300"
+                className="admin-enquiry-card"
               >
 
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-6">
@@ -480,7 +514,7 @@ export default function AdminPage() {
                       {item.name}
                     </h2>
 
-                    <div className="flex items-center gap-2 mt-2 text-gray-400 text-sm">
+                    <div className="flex items-center gap-2 mt-2 text-slate-500 text-sm">
                       <Mail className="w-4 h-4" />
                       <span>{item.email}</span>
                     </div>
@@ -488,7 +522,7 @@ export default function AdminPage() {
 
                   <div className="flex items-center gap-3 flex-wrap">
 
-                    <span className="text-sm px-4 py-2 rounded-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-white/10 text-blue-300">
+                    <span className="text-sm px-4 py-2 rounded-full bg-[#093080]/10 border border-white/10 text-[#093080]">
                       {item.service}
                     </span>
 
@@ -500,7 +534,7 @@ export default function AdminPage() {
                           e.target.value
                         )
                       }
-                      className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none"
+                      className="status-select"
                     >
                       <option value="Open">
                         Open
@@ -524,8 +558,8 @@ export default function AdminPage() {
 
                 </div>
 
-                <div className="bg-black/20 border border-white/5 rounded-2xl p-5">
-                  <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                  <p className="text-slate-700 leading-relaxed whitespace-pre-line">
                     {item.message}
                   </p>
                 </div>
@@ -540,7 +574,7 @@ export default function AdminPage() {
 
                   <a
                     href={`mailto:${item.email}`}
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-sm hover:opacity-90 transition"
+                    className="reply-btn"
                   >
                     Reply to Client
                   </a>

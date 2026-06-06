@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
+import Image from "next/image";
+import "./ChatBot.css";
 
 type Message = {
   role: "bot" | "user";
@@ -260,7 +262,16 @@ ${userMessage}
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.05 }}
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center shadow-2xl shadow-blue-500/30"
+        className="
+fixed bottom-6 right-6 z-50
+w-16 h-16
+rounded-full
+bg-[#093080]
+hover:bg-[#02A3F0]
+transition-all duration-300
+shadow-xl shadow-[#093080]/30
+flex items-center justify-center
+"
       >
         {open ? (
           <X className="w-6 h-6 text-white" />
@@ -277,39 +288,42 @@ ${userMessage}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.9 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-24 right-6 z-50 w-[320px] h-[480px] bg-[#0f1117] border border-white/10 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl"
+            className="chat-window"
           >
             {/* HEADER */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/5">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-white" />
-                </div>
+           <div className="chat-header">
+  <div className="flex items-center gap-3">
 
-                <div>
-                  <h3 className="text-sm font-semibold text-white">
-                    Tarak AI Assistant
-                  </h3>
+    <Image
+      src="/LOGO.png"
+      alt="Tarak IT Solutions"
+      width={40}
+      height={40}
+    />
 
-                  <p className="text-xs text-green-400">
-                    Online
-                  </p>
-                </div>
-              </div>
+    <div>
+      <h3 className="font-semibold text-[#093080]">
+        Tarak AI Assistant
+      </h3>
 
-              {/* RESET BUTTON */}
-              <button
-                onClick={resetChat}
-                className="p-2 rounded-lg hover:bg-white/10 transition"
-              >
-                <RefreshCw className="w-4 h-4 text-gray-300" />
-              </button>
-            </div>
+      <p className="text-xs text-[#02A3F0]">
+        Online
+      </p>
+    </div>
 
+  </div>
+
+  <button
+    onClick={resetChat}
+    className="chat-reset-btn"
+  >
+    <RefreshCw size={16} />
+  </button>
+</div>
             {/* MESSAGES */}
             <div className="h-[350px] overflow-y-auto p-4 space-y-4">
               {messages.map((msg, i) => (
-                <div
+                <div 
                   key={i}
                   className={`flex ${
                     msg.role === "user"
@@ -320,8 +334,8 @@ ${userMessage}
                   <div
                     className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm whitespace-pre-line leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-br-sm"
-                        : "bg-white/5 border border-white/10 text-gray-200 rounded-bl-sm"
+  ? "user-message"
+  : "bot-message"
                     }`}
                   >
                     {msg.text}
@@ -333,30 +347,62 @@ ${userMessage}
             </div>
 
             {/* INPUT */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-white/10 bg-[#0f1117]">
-              <div className="flex items-center gap-2">
-                <input
-                  value={input}
-                  onChange={(e) =>
-                    setInput(e.target.value)
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleSend();
-                    }
-                  }}
-                  placeholder="Type your message..."
-                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500"
-                />
+<div className="chat-input-area">
 
-                <button
-                  onClick={handleSend}
-                  className="w-11 h-11 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center"
-                >
-                  <Send className="w-4 h-4 text-white" />
-                </button>
-              </div>
-            </div>
+  <div className="flex items-center gap-2">
+
+    <input
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          handleSend();
+        }
+      }}
+      placeholder="Type your message..."
+      className="
+        flex-1
+        px-4
+        py-3
+        rounded-xl
+        border
+        border-slate-300
+        bg-[#F5F8FC]
+        text-[#111827]
+        text-sm
+        outline-none
+        transition-all
+        duration-300
+        focus:border-[#02A3F0]
+        focus:ring-2
+        focus:ring-[#02A3F0]/20
+        placeholder:text-slate-400
+      "
+    />
+
+    <button
+      onClick={handleSend}
+      className="
+        w-12
+        h-12
+        rounded-xl
+        bg-[#02A3F0]
+        hover:bg-[#028ED1]
+        transition-all
+        duration-300
+        flex
+        items-center
+        justify-center
+        shadow-lg
+        shadow-[#02A3F0]/20
+      "
+    >
+      <Send className="w-5 h-5 text-white" />
+    </button>
+
+  </div>
+
+</div>
           </motion.div>
         )}
       </AnimatePresence>

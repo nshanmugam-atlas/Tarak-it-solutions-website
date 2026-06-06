@@ -1,0 +1,98 @@
+/* ==================================================
+   TARAK IT SOLUTIONS ADMIN THEME
+================================================== */
+
+.admin-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.admin-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.05);
+}
+
+.admin-input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  outline: none;
+  transition: all .2s ease;
+}
+
+.admin-input:focus {
+  border-color: #073081;
+}
+
+.admin-btn {
+  background: #073081;
+  color: white;
+  border-radius: 16px;
+  padding: 16px;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+
+.admin-btn:hover {
+  background: #0a46b8;
+}
+
+.admin-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.admin-title {
+  color: #111827;
+  font-weight: 700;
+}
+
+.admin-subtitle {
+  color: #6b7280;
+}
+
+.admin-stat-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.admin-table-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.admin-badge {
+  background: rgba(7, 48, 129, 0.1);
+  color: #073081;
+  border-radius: 9999px;
+  padding: 8px 16px;
+}
+
+.admin-section-title {
+  color: #073081;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.admin-logo-box {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  background: #073081;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

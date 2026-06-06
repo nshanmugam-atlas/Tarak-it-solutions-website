@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-
+import ParticleBackground from "@/components/ui/Particles";
 import {
-  ShieldCheck,
+   
   Mail,
   KeyRound,
   Loader2,
@@ -101,27 +101,43 @@ export default function LoginPage() {
     };
 
   return (
-    <div className="min-h-screen bg-[#040816] text-white flex flex-col lg:flex-row">
+    <div className="relative min-h-screen bg-[#F5F8FC] text-[#111827] flex flex-col lg:flex-row overflow-hidden isolate">
+<div className="absolute inset-0 -z-10">
+  <ParticleBackground />
+  </div>
+       
 
       {/* LEFT SIDE */}
-      <div className="hidden lg:flex w-1/2 relative overflow-hidden border-r border-white/10">
+      <div className="hidden lg:flex w-1/2 relative z-10 overflow-hidden border-r border-slate-200">
 
         {/* GLOW */}
-        <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] rounded-full bg-cyan-500/20 blur-3xl" />
+        <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] rounded-full bg-[#093080]/20 blur-3xl" />
 
-        <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-purple-500/20 blur-3xl" />
+        <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-[#093080]/20 blur-3xl" />
 
         <div className="relative z-10 flex flex-col justify-center px-20">
 
           <div className="mb-10">
 
-            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-blue-600 via-cyan-500 to-purple-600 flex items-center justify-center shadow-2xl mb-8">
+            <div className="mb-10">
 
-              <ShieldCheck className="w-12 h-12 text-white" />
+  <div className="mb-8">
+    <Image
+      src="/LOGO.png"
+      alt="Tarak IT Solutions"
+      width={200}
+      height={40}
+      priority
+      className="object-contain"
+    />
+  </div>
 
-            </div>
+  <p className="text-[#093080] uppercase tracking-[0.4em] text-sm mb-5"></p>
 
-            <p className="text-cyan-400 uppercase tracking-[0.4em] text-sm mb-5">
+              
+      </div>
+
+            <p className="text-[#093080] uppercase tracking-[0.4em] text-sm mb-5">
 
               TARAK IT SOLUTIONS
 
@@ -135,7 +151,7 @@ export default function LoginPage() {
 
             </h1>
 
-            <p className="text-gray-400 text-lg leading-relaxed max-w-xl">
+            <p className="text-slate-500 text-lg leading-relaxed max-w-xl">
 
               Manage client enquiries,
               business leads, projects,
@@ -148,25 +164,25 @@ export default function LoginPage() {
 
           <div className="grid grid-cols-2 gap-6 max-w-lg">
 
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md">
 
-              <h3 className="text-3xl font-bold text-cyan-400 mb-2">
+              <h3 className="text-3xl font-bold text-[#093080] mb-2">
                 24/7
               </h3>
 
-              <p className="text-gray-400 text-sm">
+              <p className="text-slate-500 text-sm">
                 Secure access management
               </p>
 
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md">
 
-              <h3 className="text-3xl font-bold text-purple-400 mb-2">
+              <h3 className="text-3xl font-bold text-[#093080] mb-2">
                 100%
               </h3>
 
-              <p className="text-gray-400 text-sm">
+              <p className="text-slate-500 text-sm">
                 Protected authentication
               </p>
 
@@ -179,15 +195,15 @@ export default function LoginPage() {
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="flex-1 flex items-center justify-center px-6 py-10">
+      <div className="relative z-20 flex-1 flex items-center justify-center px-6 py-10">
 
         <div className="w-full max-w-md">
 
-          <div className="bg-white/5 border border-white/10 rounded-[32px] backdrop-blur-2xl p-8 md:p-10 shadow-2xl">
+          <div className="bg-white border border-slate-200 rounded-[32px] p-8 md:p-10 shadow-xl">
 
             <div className="mb-10 text-center lg:text-left">
 
-              <p className="text-cyan-400 uppercase tracking-[0.3em] text-xs mb-4">
+              <p className="text-[#093080] uppercase tracking-[0.3em] text-xs mb-4">
 
                 ADMIN LOGIN
 
@@ -199,7 +215,7 @@ export default function LoginPage() {
 
               </h2>
 
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-slate-500 leading-relaxed">
 
                 Sign in to continue to your
                 admin dashboard.
@@ -222,15 +238,15 @@ export default function LoginPage() {
               {/* EMAIL */}
               <div>
 
-                <label className="text-sm text-gray-300 mb-2 block">
+                <label className="text-sm text-slate-700 mb-2 block">
 
                   Email Address
 
                 </label>
 
-                <div className="flex items-center gap-3 bg-black/30 border border-white/10 rounded-2xl px-4 py-4">
+                <div className="flex items-center gap-3 bg-white border border-slate-300 rounded-2xl px-4 py-4">
 
-                  <Mail className="w-5 h-5 text-cyan-400" />
+                  <Mail className="w-5 h-5 text-[#093080]" />
 
                   <input
                     type="email"
@@ -239,7 +255,7 @@ export default function LoginPage() {
                     onChange={(e) =>
                       setEmail(e.target.value)
                     }
-                    className="w-full bg-transparent outline-none placeholder:text-gray-500"
+                    className="w-full border-b border-slate-300 bg-transparent py-3 outline-none focus:border-[#02A3F0] placeholder:text-slate-400"
                   />
 
                 </div>
@@ -249,15 +265,15 @@ export default function LoginPage() {
               {/* PASSWORD */}
               <div>
 
-                <label className="text-sm text-gray-300 mb-2 block">
+                <label className="text-sm text-slate-700 mb-2 block">
 
                   Password
 
                 </label>
 
-                <div className="flex items-center gap-3 bg-black/30 border border-white/10 rounded-2xl px-4 py-4">
+                <div className="flex items-center gap-3 bg-white border border-slate-300 rounded-2xl px-4 py-4">
 
-                  <KeyRound className="w-5 h-5 text-purple-400" />
+                  <KeyRound className="w-5 h-5 text-[#093080]" />
 
                   <input
                     type={
@@ -272,7 +288,7 @@ export default function LoginPage() {
                         e.target.value
                       )
                     }
-                    className="w-full bg-transparent outline-none placeholder:text-gray-500"
+                    className="w-full bg-transparent outline-none placeholder:text-slate-400"
                   />
 
                   <button
@@ -285,9 +301,9 @@ export default function LoginPage() {
                   >
 
                     {showPassword ? (
-                      <EyeOff className="w-5 h-5 text-gray-400" />
+                      <EyeOff className="w-5 h-5 text-slate-500" />
                     ) : (
-                      <Eye className="w-5 h-5 text-gray-400" />
+                      <Eye className="w-5 h-5 text-slate-500" />
                     )}
 
                   </button>
@@ -303,7 +319,7 @@ export default function LoginPage() {
                   onClick={
                     handleForgotPassword
                   }
-                  className="text-sm text-cyan-400 hover:text-cyan-300 transition"
+                  className="text-sm text-[#093080] hover:opacity-80 transition"
                 >
                   Forgot Password?
                 </button>
@@ -314,7 +330,7 @@ export default function LoginPage() {
               <button
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 font-semibold hover:opacity-90 transition"
+                  className="w-full py-4 rounded-2xl bg-[#02A3F0] text-white font-semibold hover:bg-[#028ED1] transition duration-300 shadow-lg shadow-[#02A3F0]/20"
               >
 
                 <span className="flex items-center justify-center gap-3">
