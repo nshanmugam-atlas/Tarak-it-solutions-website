@@ -87,7 +87,7 @@ export default function Hero() {
               {/* SAP LOGO */}
               <div>
                 <Image
-                  src="/SAP.png"
+                  src="/ERP.png"
                   alt="SAP"
                   width={440}
                   height={220}
@@ -104,10 +104,7 @@ export default function Hero() {
                 SAP ERP Solutions
               </h3>
 
-              {/* Subtitle */}
-              <p className="mt-3 text-center text-[#092D82]/75 text-sm font-medium">
-                Finance • HR • CRM • Inventory • Analytics • Ariba
-              </p>
+              
 
             </div>
           </div>

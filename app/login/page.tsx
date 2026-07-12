@@ -85,8 +85,7 @@ export default function LoginPage() {
         await supabase.auth.resetPasswordForEmail(
           email,
           {
-            redirectTo:
-              "http://localhost:3000/admin/login",
+            redirectTo: `${window.location.origin}/reset-password`,
           }
         );
 
@@ -313,18 +312,16 @@ export default function LoginPage() {
               </div>
 
               {/* FORGOT PASSWORD */}
-              <div className="flex justify-end">
-
-                <button
-                  onClick={
-                    handleForgotPassword
-                  }
-                  className="text-sm text-[#093080] hover:opacity-80 transition"
-                >
-                  Forgot Password?
-                </button>
-
-              </div>
+              {/* FORGOT PASSWORD */}
+<div className="flex justify-end">
+  <button
+    type="button"
+    onClick={handleForgotPassword}
+    className="text-sm text-[#02A3F0] hover:underline"
+  >
+    Forgot Password?
+  </button>
+</div>
 
               {/* BUTTON */}
               <button

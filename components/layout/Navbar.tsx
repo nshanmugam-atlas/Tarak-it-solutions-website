@@ -63,7 +63,7 @@ export default function Navbar() {
             href="#stats"
             className="hover:text-[#092D82] transition-colors"
           >
-            Stats
+            Technologies
           </a>
 
           <a
