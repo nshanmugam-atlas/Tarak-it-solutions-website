@@ -16,7 +16,7 @@ const technologies = [
   },
   {
     name: "ERP Solutions",
-    logo: "/tech/ERP Logo.png",
+    logo: "/tech/ERP logo.png",
     description: "Enterprise Resource Planning",
   },
   {
