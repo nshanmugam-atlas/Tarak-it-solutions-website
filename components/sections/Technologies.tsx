@@ -21,7 +21,7 @@ const technologies = [
   },
   {
     name: "Next.js",
-    logo: "/tech/next logo.png",
+    logo: "/tech/Next logo.png",
     description: "Modern React Framework",
   },
 ];
